@@ -31,14 +31,21 @@ public class PeerServer extends Thread{
     		while (listening){
     			try {
     				System.out.println("[SERVER] Waiting for another client to connect"); 
-    			    clSocket = serverSocket.accept();
+    			    clSocket = serverSocket.accept(); //wait for client to connect, no timeout
+    				clSocket.setSoTimeout(5000);//Set Socket Timeout for terminating blocking read calls on InputStream
+
+    				
     			} catch (IOException e) {
     			    System.out.println("[SERVER] ERROR: Accept failed on port=" + port);
     			    break; //System.exit(-1);
     			}
     			clientAddr = serverSocket.getInetAddress();
     			System.out.println("[SERVER] Accepted Client "+count+" Connection. IP="+clientAddr.toString());
-    			new PeerServerThread(clSocket,count++).start();
+    			try {
+					new PeerServerThread(clSocket,count++).start();
+				} catch (SocketException e) {
+					e.printStackTrace();
+				}
     		}
     		
     		try {
