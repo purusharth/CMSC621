@@ -7,6 +7,7 @@ public class PeerServer extends Thread{
 	    
 		private int port;
 		private ServerSocket serverSocket = null;
+		public static long threadCount = 0; //current number of running Server threads
 		
         public PeerServer(int port) {
         	super("PeerServer");
@@ -26,7 +27,7 @@ public class PeerServer extends Thread{
     		boolean listening = true;
     		Socket clSocket = null;
     		InetAddress clientAddr;
-    		long count = 1;
+    		long threadID = 1;
     		
     		while (listening){
     			try {
@@ -40,9 +41,9 @@ public class PeerServer extends Thread{
     			    break; //System.exit(-1);
     			}
     			clientAddr = serverSocket.getInetAddress();
-    			System.out.println("[SERVER] Accepted Client "+count+" Connection. IP="+clientAddr.toString());
+    			System.out.println("[SERVER] Accepted Client "+threadID+" Connection. IP="+clientAddr.toString());
     			try {
-					new PeerServerThread(clSocket,count++).start();
+					new PeerServerThread(clSocket,threadID++).start();
 				} catch (SocketException e) {
 					e.printStackTrace();
 				}
