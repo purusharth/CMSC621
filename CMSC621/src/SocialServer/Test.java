@@ -1,6 +1,8 @@
 package SocialServer;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 /*
 import net.sf.json.JSONObject;
 import net.sf.json.JSONArray;
@@ -18,16 +20,18 @@ public class Test
 
 		  public MyJson() {}
 
-		  private String foo;
+		  private PublicProfile publicprofile;
+		  private PrivateProfile privateprofile;
+		  private String gid;
 		  private float coolness;
 		  // other attributes
 
-		  public void setFoo(String foo) {
-		    this.foo = foo;
+		  public void setgid(String gid) {
+		    this.gid = gid;
 		  }
 
-		  public String getFoo() {
-		    return foo;
+		  public String getgid() {
+		    return gid;
 		  }
 
 		  public void setCoolness(float coolness) {
@@ -39,14 +43,14 @@ public class Test
 		  }
 		  
 		  public String toString() {
-		        return String.format("foo:%s,coolnes:%f", foo, coolness);
+		        return String.format("pub:%s\npriv:%s", publicprofile,privateprofile);
 		  }
 
 
   }
   public static void main(String args[]){
+	  //JSONObject object=new JSONObject();
 	  /*
-	  JSONObject object=new JSONObject();
 	  object.put("name","Amit Kumar");
 	  object.put("Max.Marks",new Integer(100));
 	  object.put("Min.Marks",new Double(40));
@@ -88,7 +92,16 @@ public class Test
       MyJson myJson = new Gson().fromJson(jsonTxt, MyJson.class);
 
       // now you have a real java object
-      System.out.println(myJson);
+     System.out.println(myJson);
+      
+
+      try {
+		System.out.println(InetAddress.getLocalHost().getHostAddress());
+	} catch (UnknownHostException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
 
   }
 }

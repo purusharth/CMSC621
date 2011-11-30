@@ -2,7 +2,7 @@ package SocialServer;
 
 import java.util.Arrays;
 
-public class Data {
+public class PublicProfile {
 	private String gid=null;
 	private String name=null;
 	private Integer age=null;
