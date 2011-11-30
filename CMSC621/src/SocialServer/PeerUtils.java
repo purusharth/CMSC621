@@ -1,6 +1,11 @@
 package SocialServer;
 
-import java.io.*;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.BufferedInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -9,17 +14,33 @@ public class PeerUtils {
 
 	
 	
-   public static String readFiletoString(String filePath) throws java.io.IOException{
+   public static String readFiletoString(String filePath) {
 	    byte[] buffer = new byte[(int) new File(filePath).length()];
 	    BufferedInputStream f = null;
 	    try {
 	        f = new BufferedInputStream(new FileInputStream(filePath));
 	        f.read(buffer);
-	    } finally {
+	    } catch (IOException e) {
+			e.printStackTrace();
+		}
+	    finally {
 	        if (f != null) try { f.close(); } catch (IOException ignored) { }
 	    }
 	    return new String(buffer);
 	}
+   
+   public static void writeStringtoFile(String filePath, String data){
+	   
+		try {
+			FileWriter writer = new FileWriter(filePath);
+			writer.write(data);
+			writer.close();
+	 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	   
+   }
    
 	public static String getIPstr(InetAddress inputAddr) {
 		byte[] ipAddr = inputAddr.getAddress();

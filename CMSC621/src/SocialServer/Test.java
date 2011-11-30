@@ -1,6 +1,5 @@
 package SocialServer;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 /*
@@ -69,13 +68,7 @@ public class Test
 	  arrayObj.add(new Double(33.33));
 	  System.out.println(arrayObj);
 	  */
-	  String jsonTxt=null;
-	  try {
-		jsonTxt = PeerUtils.readFiletoString("sample-json.txt");
-	  } catch (IOException e) {
-		e.printStackTrace();
-	  }
-	 
+	  
 	  /*
       JSONObject json = (JSONObject) JSONSerializer.toJSON( jsonTxt );        
       double coolness = json.getDouble( "coolness" );
@@ -89,19 +82,21 @@ public class Test
       System.out.println( "Pilot: " + lastName );
       */
 	  
-      MyJson myJson = new Gson().fromJson(jsonTxt, MyJson.class);
-
-      // now you have a real java object
-     System.out.println(myJson);
+	  String jsonTxt = PeerUtils.readFiletoString("sample-json.txt");  
+      Profile myProf = new Gson().fromJson(jsonTxt, Profile.class);
+      System.out.println(myProf);
       
 
-      try {
+    try {
 		System.out.println(InetAddress.getLocalHost().getHostAddress());
 	} catch (UnknownHostException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-
+      
+    String jsonrequest = PeerRequestHandler.makeRequest("1234","getData");
+    System.out.println(jsonrequest);
+    PeerUtils.writeStringtoFile("profile.json", jsonrequest);
 
   }
 }

@@ -18,7 +18,8 @@ public class PeerMain {
 		System.out.println("----------------Client Socket Parameters -------------");
 		PeerUtils.printSocketParameters(clSocket);
 		
-		String srvMsg =  PeerClient.sendRequest(clSocket, "getData"); //Send Request & Get Response
+		String clRequest = PeerRequestHandler.makeRequest("1234","getData");
+		String srvMsg =  PeerClient.sendRequest(clSocket, clRequest); //Send Request & Get Response
 		PeerClient.disconnect(clSocket); //Close Connection
 		System.out.println("[CLIENT] RECEIVED-MSG: " + srvMsg); //Print Response
 		
