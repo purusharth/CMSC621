@@ -7,13 +7,10 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.Date;
 
 public class PeerServerThread extends Thread{
 	private Socket clientSocket = null;
-	private long count = 0;
 	private long threadID=0;
-	private Date dt = new Date();
 	private Profile profile;
 	
     public PeerServerThread(Socket socket, long count, Profile profile) throws SocketException {
@@ -22,9 +19,10 @@ public class PeerServerThread extends Thread{
     this.threadID = count;
     this.profile = profile;
 	PeerServer.threadCount++;
-    System.out.println("----------------Server Socket Parameters -------------");
-    PeerUtils.printSocketParameters(clientSocket);
-    System.out.println("------------------------------------------------------");
+	//System.out.println("Current Number of threads: "+PeerServer.threadCount);
+    //System.out.println("----------------Server Socket Parameters -------------");
+    //PeerUtils.printSocketParameters(clientSocket);
+    //System.out.println("------------------------------------------------------");
     }
     
  
@@ -43,17 +41,17 @@ public class PeerServerThread extends Thread{
 		
 		try{
 			inputLine = in.readLine();
-			System.out.println("[SERVER]["+threadID+"]["+dt.getTime()+"] CLIENT-MSG: "+inputLine);
+			System.out.println("[SERVER]["+threadID+"]["+System.currentTimeMillis()+"] CLIENT-MSG: "+inputLine);
 			PeerRequestHandler prh = new PeerRequestHandler(profile);
 			outputLine = prh.getResponse(inputLine);
 			out.println(outputLine);
 			if (outputLine.length() == 0){
-				System.out.println("[SERVER]["+threadID+"]["+dt.getTime()+"] Server Response: Empty String");
+				System.out.println("[SERVER]["+threadID+"]["+System.currentTimeMillis()+"] Server Response: Empty String");
 			}
 
 		} catch (SocketTimeoutException e){
-			System.err.println("[SERVER]["+threadID+"]["+dt.getTime()+"] "+
-					"TIMEOUT: Timeout reached waiting for client "+count+" to respond. CLosing Connection.");
+			System.err.println("[SERVER]["+threadID+"]["+System.currentTimeMillis()+"] "+
+					"TIMEOUT: Timeout reached waiting for client "+threadID+" to respond. CLosing Connection.");
 			
 		}
 		
@@ -61,15 +59,16 @@ public class PeerServerThread extends Thread{
 		out.close();
 		in.close();
 		clientSocket.close();
-		System.out.println("[SERVER]["+threadID+"]["+dt.getTime()+"] Client "+count+" Disconnected");
+		System.out.println("[SERVER]["+threadID+"]["+System.currentTimeMillis()+"] Client "+threadID+" Disconnected");
     }
     
     catch (IOException e) {
         e.printStackTrace();
     }
 	finally{
-		System.out.println("[SERVER]["+threadID+"]["+dt.getTime()+"] Peer Server ThreadID "+count+" Terminated");
+		System.out.println("[SERVER]["+threadID+"]["+System.currentTimeMillis()+"] Peer Server ThreadID "+threadID+" Terminated");
 		PeerServer.threadCount--;
+		//System.out.println("Current Number of threads: "+PeerServer.threadCount);
 	}
     }
 }

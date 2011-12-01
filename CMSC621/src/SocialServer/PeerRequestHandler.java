@@ -19,10 +19,12 @@ public class PeerRequestHandler{
         String gid = reqJson.getGID();
         
 		if (request.equalsIgnoreCase("getPublicProfile")){
-			outputStr = this.myprof.getPubStr(); //getPublicProfile
+			    outputStr = this.myprof.getPubStr(); //getPublicProfile
 		} else if(request.equalsIgnoreCase("getPrivateProfile")){
 			if(myprof.isFriend(gid)){
-				
+				outputStr = this.myprof.getPrivStr();
+			}else{
+				outputStr = "Not a friend. Request Denied.";
 			}
 		} else {
 			outputStr = "Unknown Request";
