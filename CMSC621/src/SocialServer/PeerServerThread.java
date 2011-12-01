@@ -14,11 +14,13 @@ public class PeerServerThread extends Thread{
 	private long count = 0;
 	private long threadID=0;
 	private Date dt = new Date();
+	private Profile profile;
 	
-    public PeerServerThread(Socket socket, long count) throws SocketException {
+    public PeerServerThread(Socket socket, long count, Profile profile) throws SocketException {
     super("PeerServerThread");
     this.clientSocket = socket;
     this.threadID = count;
+    this.profile = profile;
 	PeerServer.threadCount++;
     System.out.println("----------------Server Socket Parameters -------------");
     PeerUtils.printSocketParameters(clientSocket);
@@ -42,7 +44,8 @@ public class PeerServerThread extends Thread{
 		try{
 			inputLine = in.readLine();
 			System.out.println("[SERVER]["+threadID+"]["+dt.getTime()+"] CLIENT-MSG: "+inputLine);
-			outputLine = PeerRequestHandler.getResponse(inputLine);
+			PeerRequestHandler prh = new PeerRequestHandler(profile);
+			outputLine = prh.getResponse(inputLine);
 			out.println(outputLine);
 			if (outputLine.length() == 0){
 				System.out.println("[SERVER]["+threadID+"]["+dt.getTime()+"] Server Response: Empty String");

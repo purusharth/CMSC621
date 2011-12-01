@@ -19,13 +19,14 @@ public class Test
   public static void main(String args[]){
 
 	  
-	  String jsonTxt = PeerUtils.readFiletoString("sample-json.txt");  
+	  String jsonTxt = PeerUtils.readFiletoString("profile.json");  
       Profile myProf = new Gson().fromJson(jsonTxt, Profile.class);
       System.out.println(myProf);
       myProf.addFriend("Jason");
       System.out.println(myProf.isFriend("Jason"));
-      System.out.println(myProf.removeFriend("Jason"));
-      System.out.println(myProf.isFriend("Jason"));
+      System.out.println(myProf.getPubStr());
+      //System.out.println(myProf.removeFriend("Jason"));
+      //System.out.println(myProf.isFriend("Jason"));
       
 
     try {
@@ -34,10 +35,11 @@ public class Test
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-      
-    String jsonrequest = PeerRequestHandler.makeRequest("1234","getData");
+    
+    PeerRequestHandler ph = new PeerRequestHandler(myProf);
+    String jsonrequest = ph.makeRequest("1234","getData");
     System.out.println(jsonrequest);
-    PeerUtils.writeStringtoFile("profile.json", jsonrequest);
+    PeerUtils.writeStringtoFile("profile-request.json", jsonrequest);
 
   }
 }

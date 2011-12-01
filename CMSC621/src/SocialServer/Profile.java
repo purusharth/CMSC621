@@ -1,15 +1,27 @@
 package SocialServer;
 
 import java.util.ArrayList;
+import com.google.gson.Gson;
 
 public class Profile {
-	  public Profile() {}
+	  	public Profile() {}
 
-	  private PublicProfile publicprofile;
-	  private PrivateProfile privateprofile;
+	  	private PublicProfile publicprofile;
+	  	private PrivateProfile privateprofile;
 	  
-	  public PublicProfile getPub(){ return publicprofile;}
-	  public PrivateProfile getPriv(){ return privateprofile;}
+	  	public PublicProfile getPub(){ return publicprofile;}
+	  	public PrivateProfile getPriv(){ return privateprofile;}
+	  	
+	  	public String getPubStr(){ //return Public Profile as JSON String
+		  Gson gson = new Gson();
+		  return gson.toJson(publicprofile);
+	  	}
+	  	
+	  	public String getPrivStr(){ //Return Private Profile as JSON String
+		  Gson gson = new Gson();
+		  return gson.toJson(privateprofile);
+	  	}
+	  	
 	  
 		public String getGID() { return publicprofile.getGID();}
 		public String getName() { return publicprofile.getName();}

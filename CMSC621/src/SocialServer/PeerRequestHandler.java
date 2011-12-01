@@ -5,30 +5,35 @@ import com.google.gson.Gson;
 
 public class PeerRequestHandler{
 	
-	private static String dummyProfile = 
-			"{"
-				+"'gid':'123456AB',"
-				+"'name':'someone',"
-				+"'age':25,"
-				+"'hobbies':['reading','baseball','football'],"
-				+"'sex':'male'"
-			+"}";
+	private Profile myprof;
 	
-	public static String getResponse(String inputStr){
+	
+	public PeerRequestHandler(Profile profile){
+		this.myprof = profile;
+	};
+	
+	public String getResponse(String inputStr){
 		String outputStr="";
 		PeerRequest reqJson = new Gson().fromJson(inputStr, PeerRequest.class);
-
-		if (reqJson.getRequest().equalsIgnoreCase("getData")){
-			outputStr = dummyProfile;
+        String request = reqJson.getRequest();
+        String gid = reqJson.getGID();
+        
+		if (request.equalsIgnoreCase("getPublicProfile")){
+			outputStr = this.myprof.getPubStr(); //getPublicProfile
+		} else if(request.equalsIgnoreCase("getPrivateProfile")){
+			if(myprof.isFriend(gid)){
+				
+			}
+		} else {
+			outputStr = "Unknown Request";
 		}
 		return(outputStr);
 	}
 	
-	public static String makeRequest(String gid, String request){
+	public String makeRequest(String gid, String request){
 		String outputStr="";
 		PeerRequest reqJson = new PeerRequest();
 		Gson gson = new Gson();
-		
 		reqJson.setGID(gid);
 		reqJson.setRequest(request);		
 		outputStr = gson.toJson(reqJson);
