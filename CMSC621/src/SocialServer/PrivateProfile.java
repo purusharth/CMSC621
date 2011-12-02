@@ -3,8 +3,8 @@ package SocialServer;
 import java.util.ArrayList;
 
 public class PrivateProfile {
-	public String gid=null;
-	public String school=null;
+	public String gid="";
+	public String school="";
 	public ArrayList<String> friends= new ArrayList<String>();
 	public ArrayList<String> messages= new ArrayList<String>();
 	

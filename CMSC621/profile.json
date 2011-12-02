@@ -1,4 +1,1 @@
-{
-"publicprofile":{"gid":"123456AB","name":"john","age":33,"hobbies":["swimming","cycling"],"sex":"male"},
-"privateprofile":{"gid":"123456AB","school":"UMBC","friends":["sam","bryan"],"messages":["Hi there","Good Morning","Bye"]}
-}
+{"publicprofile":{"gid":"puru","name":"Purusharth Prakash","age":31,"hobbies":["swimming","reading","fishing"],"sex":"Male"},"privateprofile":{"gid":"puru","school":"UMBC","friends":["somnath","jason"],"messages":["Welcome"]}}

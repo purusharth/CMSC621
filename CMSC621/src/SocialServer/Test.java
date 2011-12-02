@@ -18,7 +18,7 @@ public class Test
 
   public static void main(String args[]){
 
-	  
+	  /*
 	  String jsonTxt = PeerUtils.readFiletoString("profile.json");  
       Profile myProf = new Gson().fromJson(jsonTxt, Profile.class);
       System.out.println(myProf);
@@ -27,6 +27,7 @@ public class Test
       System.out.println(myProf.getPubStr());
       //System.out.println(myProf.removeFriend("Jason"));
       //System.out.println(myProf.isFriend("Jason"));
+       */
       
 
     try {
@@ -36,10 +37,19 @@ public class Test
 		e.printStackTrace();
 	}
     
+    /*
     PeerRequestHandler ph = new PeerRequestHandler(myProf);
     String jsonrequest = ph.makeRequest("1234","getData");
     System.out.println(jsonrequest);
     PeerUtils.writeStringtoFile("profile-request.json", jsonrequest);
+    */
+    Profile prof1 = new Profile();
+    Social social = new Social(prof1, "profile.json");
+    social.createPofile();
+    social.displayProfile();
+    //social.saveProfile();
+    social.DisplayFriendList();
+    
 
   }
 }

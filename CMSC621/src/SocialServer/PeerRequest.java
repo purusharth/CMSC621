@@ -1,7 +1,5 @@
 package SocialServer;
 
-import java.util.Arrays;
-
 public class PeerRequest {
 	private String gid = null;
 	private String request = null;
