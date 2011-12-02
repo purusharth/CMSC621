@@ -3,9 +3,10 @@ package SocialServer;
 import java.util.HashMap;
 
 public class DHT {
-	private HashMap dht;
+	private HashMap<String,String> dht;
 	
 	public DHT(){
-		dht = new HashMap();
+		dht = new HashMap<String,String>();
 	}
+	
 }
