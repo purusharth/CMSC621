@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 public class Social {
 	private Profile profile;
 	private String datafile;
+	private DHTdata dd;
 	
 	public Social(Profile profile, String datafile) {
 		this.profile = profile;
@@ -40,6 +41,11 @@ public class Social {
 		PeerUtils.writeStringtoFile(datafile, gson.toJson(profile));
 	}
 	
+	public void LoadProfile(){
+		 String jsonTxt = PeerUtils.readFiletoString(datafile);  
+	     profile = new Gson().fromJson(jsonTxt, Profile.class);
+	}
+	
 	public String profileStr(){
 		Gson gson = new Gson();
 		return gson.toJson(profile);
@@ -62,8 +68,6 @@ public class Social {
 	    for(int i = 0; i < n ; i++) System.out.println( "  " + fl.get( i ) );
 	}
 	
-
-
 	public void RemoveFriend(String friend){
 		if (profile.isFriend(friend)) {
 			profile.removeFriend(friend);
@@ -72,8 +76,34 @@ public class Social {
 		}
 	}
 	
-	public void UpdatePubProfile(){}
-	public void UpdatePrivProfile(){}
+	//create data string to be stored in DHT
+	public String makeDHTdata(){ 
+	    dd = new DHTdata();
+	    dd.setGID(profile.getGID());
+	    PublicProfile pp = new PublicProfile();
+	    pp.setName(profile.getName());
+	    pp.setGID(profile.getGID());
+	    pp.setSex(profile.getSex());
+	    pp.setHobbies(profile.getHobbies());
+	    dd.setPubProfile(pp);
+	    //dd.addMessage("josh", "Hello");
+	    //dd.addMessage("jeremy", "Where you at?");
+	    //dd.addRequest("jason", "Lets Become Friends");
+	    Gson gson = new Gson();
+	    return gson.toJson(dd);
+	}
+	
+	//Parse data string retrieved from DHT
+	public void parseDHTdata(String data){
+		Gson gson = new Gson();
+		dd = gson.fromJson(data, DHTdata.class);
+	}
+	
+	public String getNewMessage(){ return dd.getNextMessage(); }
+	
+	public String getNewRequest(){ return dd.getNextRequest(); }
+	
+	public void UpdateDHTPubProfile(){ dd.setPubProfile(profile.getPub());}
 	
 	public void joinNetwork(){}
 	public void leaveNetwork(){}
@@ -90,6 +120,7 @@ public class Social {
 	public void RespondToFriendRequest(){}
 	public void AcknowledgeFriendRequestResponse(){}
 	
+	public void UpdatePrivProfile(){}
 	public void getMessages(){} //get messages stored, locally
 	public void SendMessage(){}
 

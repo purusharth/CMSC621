@@ -7,6 +7,7 @@ public class Profile {
 	
 
 	   // Only one instance of Profile Class is maintained. All threads access/modify this instance.
+	/*
 		public class PublicProfile {
 			public String gid="";
 			public String name="";
@@ -14,7 +15,7 @@ public class Profile {
 			public ArrayList<String> hobbies = new ArrayList<String>();
 			public String sex="";
 		}
-		
+	*/	
 		public class PrivateProfile {
 			public String gid="";
 			public String school="";

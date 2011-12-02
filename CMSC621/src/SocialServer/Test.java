@@ -8,7 +8,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONSerializer;
 //import org.apache.commons.io.IOUtils;
 */
-import com.google.gson.*;
+import com.google.gson.Gson;
 
 /*
  * Junk code for testing
@@ -50,6 +50,21 @@ public class Test
     //social.saveProfile();
     social.DisplayFriendList();
     
+    //-------------------------------------------------------------------------------
+    DHTdata dd = new DHTdata();
+    dd.setGID("sam");
+    PublicProfile pp = new PublicProfile();
+    pp.setName("Sam Bam");
+    pp.setGID("sam");
+    pp.setSex("Male");
+    pp.addHobby("sleeping");
+    dd.setPubProfile(pp);
+    dd.addMessage("josh", "Hello Sam");
+    dd.addMessage("jeremy", "Where you at?");
+    dd.addRequest("jason", "Lets Become Friends");
+    Gson gson = new Gson();
+    System.out.println(gson.toJson(dd));
+    //------------------------------------------------------------------------------
 
   }
 }
