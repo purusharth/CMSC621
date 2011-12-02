@@ -8,6 +8,7 @@ public class Social {
 	private Profile profile;
 	private String datafile;
 	private DHTdata dd;
+	private DHT dht = new DHT();
 	
 	public Social(Profile profile, String datafile) {
 		this.profile = profile;
@@ -76,6 +77,13 @@ public class Social {
 		}
 	}
 	
+	public void DisplayMessages(){
+		ArrayList<String> ml = profile.getMessages(); 
+		System.out.println("Message List:");
+	    int n = ml.size();
+	    for(int i = 0; i < n ; i++) System.out.println( "  " + ml.get( i ) );
+	}
+	
 	//create data string to be stored in DHT
 	public String makeDHTdata(){ 
 	    dd = new DHTdata();
@@ -84,6 +92,7 @@ public class Social {
 	    pp.setName(profile.getName());
 	    pp.setGID(profile.getGID());
 	    pp.setSex(profile.getSex());
+	    pp.setAge(profile.getAge());
 	    pp.setHobbies(profile.getHobbies());
 	    dd.setPubProfile(pp);
 	    //dd.addMessage("josh", "Hello");
@@ -104,24 +113,39 @@ public class Social {
 	public String getNewRequest(){ return dd.getNextRequest(); }
 	
 	public void UpdateDHTPubProfile(){ dd.setPubProfile(profile.getPub());}
+
+	//Store Current Profile into DHT (with empty Message and Request Lists)
+	public void dhtInsert(){ dht.insert(profile.getGID(), makeDHTdata()) ;}
 	
-	public void joinNetwork(){}
-	public void leaveNetwork(){}
+	public String dhtRetrieve(){ return dht.retrieve(profile.getGID());}
 	
-	public void dhtInsert(String data){}
-	//public String dhtGet(){}
-	public void dhtUpdateProfile(){}
-	public void dhtUpdatePubKey(){}
-	public void dhtUpdateUserID(){}
-	public void dhtGetMessages(){} //Get New Messages from DHT 
-	public void dhtGetRequests(){}
+	public void dhtUpdateProfile(){ dht.update(profile.getGID(), makeDHTdata());}
 	
-	public void SendFriendRequest(){} 
+	public void SendMessage(String receiverID, String message){
+		//get data
+		String dhtdata = dht.retrieve(receiverID);
+		//parse data into dd
+		parseDHTdata(dhtdata);
+		//add new message
+		dd.addMessage(profile.getGID(), message);
+		//update data
+		Gson gson = new Gson();
+		dht.update(receiverID, gson.toJson(dd));
+	}
+	
+	//public void dhtUpdatePubKey(){}
+	//public void dhtUpdateUserID(){}
+	//public void dhtGetMessages(){} //Get New Messages from DHT 
+	//public void dhtGetRequests(){}
+	
+	public void SendFriendRequest(String request){} 
 	public void RespondToFriendRequest(){}
 	public void AcknowledgeFriendRequestResponse(){}
 	
-	public void UpdatePrivProfile(){}
-	public void getMessages(){} //get messages stored, locally
-	public void SendMessage(){}
+	//public void UpdatePrivProfile(){}
+	
+	
+	public void joinNetwork(){}
+	public void leaveNetwork(){}
 
 }

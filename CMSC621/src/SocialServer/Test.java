@@ -49,22 +49,11 @@ public class Test
     social.displayProfile();
     //social.saveProfile();
     social.DisplayFriendList();
+    social.DisplayMessages();
+    System.out.println(social.makeDHTdata());
     
     //-------------------------------------------------------------------------------
-    DHTdata dd = new DHTdata();
-    dd.setGID("sam");
-    PublicProfile pp = new PublicProfile();
-    pp.setName("Sam Bam");
-    pp.setGID("sam");
-    pp.setSex("Male");
-    pp.addHobby("sleeping");
-    dd.setPubProfile(pp);
-    dd.addMessage("josh", "Hello Sam");
-    dd.addMessage("jeremy", "Where you at?");
-    dd.addRequest("jason", "Lets Become Friends");
-    Gson gson = new Gson();
-    System.out.println(gson.toJson(dd));
-    //------------------------------------------------------------------------------
+
 
   }
 }
