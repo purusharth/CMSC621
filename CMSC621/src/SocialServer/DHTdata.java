@@ -115,13 +115,21 @@ public class DHTdata {
   		ip = PeerUtils.getIPstr(ipAddr);
   	}
   	
+  	public String getIP(){
+  		return ip;
+  	}
+  	
   	public void updateIP(){
   		try {
-			this.ip = PeerUtils.getIPstr(InetAddress.getLocalHost());
+			ip = PeerUtils.getIPstr(InetAddress.getLocalHost());
 		} catch (UnknownHostException e) {
 			System.out.println("Failure in updateIP in DHTdata.");
 			e.printStackTrace();
 		}
+  	}
+  	
+  	public long getTimeStamp(){
+  		return ts;
   	}
   	
   	public void updateTimeStamp(){

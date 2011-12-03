@@ -1,5 +1,0 @@
-{'gid':'123456AB',
- 'name":'someone',
- 'age":25,
- 'hobbies":['reading','baseball','football'],
- 'sex':'male'}
