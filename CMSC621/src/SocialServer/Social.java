@@ -184,6 +184,8 @@ public class Social {
 		dht.update(receiverID, gson.toJson(dr));
 	}
 	
+
+	
 	public void SendFriendRequest(String receiverID, String request){
 		Gson gson = new Gson();
 		String dhtdata = dht.retrieve(receiverID);
@@ -206,6 +208,18 @@ public class Social {
 		DHTdata dr = gson.fromJson(dhtdata, DHTdata.class);
 		dr.addAck(profile.getGID(), ackresponse);
 		dht.update(receiverID, gson.toJson(dr));
+	}
+	
+	public void ProcessMessages(){
+	    Gson gson = new Gson();
+	    DHTdata.MessageStruct ms;
+	    String msg = getNewMessage();
+	    while (!(msg.equals(""))){
+	    	ms = gson.fromJson(msg, DHTdata.MessageStruct.class);
+	    	System.out.println(ms);
+	    	profile.insertMessage(ms.msg);
+	    	msg = getNewMessage();
+	    }
 	}
 	
 	public void ProcessRequests(){

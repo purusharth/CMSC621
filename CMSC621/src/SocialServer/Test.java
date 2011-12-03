@@ -65,14 +65,7 @@ public class Test
     
     //Check for new messages
     social.dhtRetrieve();
-    Gson gson = new Gson();
-    DHTdata.MessageStruct ms;
-    String msg = social.getNewMessage();
-    while (!(msg.equals(""))){
-    	ms = gson.fromJson(msg, DHTdata.MessageStruct.class);
-    	System.out.println(ms);
-    	msg = social.getNewMessage();
-    }
+    social.ProcessMessages();
     social.dhtUpdate();
     social.dhtDisplay();
     
