@@ -15,7 +15,8 @@ public class DHTdata {
 		public long expiry = 0; //Request/Response not valid after expiry timestamp, 0=forever
 		
 		public String toString(){
-			return String.format("{\"sender\":\"%s\",\"type\"=\"%s\",\"msg\":\"%s\",\"expiry\"=\"%d\"}",sender,type,msg,expiry);
+			//return String.format("{\"sender\":\"%s\",\"type\":\"%s\",\"msg\":\"%s\",\"expiry\":\"%d\"}",sender,type,msg,expiry);
+			return String.format("sender: %s, message: %s",sender,msg);
 		}
 	}
 	
@@ -82,12 +83,12 @@ public class DHTdata {
   		requests.add(ms);
   	}
   	
-  	public void addResponse(String gid, String message, boolean accept){
+  	public void addResponse(String gid, String response, boolean accept){
   		MessageStruct ms = new MessageStruct();
   		ms.sender = gid;
-  		if (accept) ms.type = "ACCEPT"; else ms.type = "DENY";
+  		if (accept) {ms.type = "ACCEPT";} else {ms.type = "DENY";}
   		ms.expiry = 0;
-  		ms.msg = message;
+  		ms.msg = response;
   		requests.add(ms);
   	}
   	
@@ -101,7 +102,7 @@ public class DHTdata {
   	}
   	
   	public void setIP(InetAddress ipAddr){
-  		this.ip = PeerUtils.getIPstr(ipAddr);
+  		ip = PeerUtils.getIPstr(ipAddr);
   	}
   	
   	public void updateIP(){
@@ -115,6 +116,6 @@ public class DHTdata {
   	
   	public void updateTimeStamp(){
   		Date date = new Date();
-  		this.ts = date.getTime(); 
+  		ts = date.getTime(); 
   	}
 }

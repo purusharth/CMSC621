@@ -7,8 +7,9 @@ import com.google.gson.Gson;
 public class Social {
 	private Profile profile;
 	private String datafile;
-	private DHTdata dd;
-	private DHT dht;
+	private DHTdata dd; //Data Structure for data stored in DHT
+	private DHT dht; //Reference to hashtable
+	//private Gson gson = new Gson();
 	
 	public Social(Profile profile, String datafile, DHT hash) {
 		this.profile = profile;
@@ -104,7 +105,7 @@ public class Social {
 	//Create dd data object, for DHT data structure.
 	//Data object dd values cannot be modified directly, values are loaded from profile
 	//create data string to be stored in DHT
-	public String makeDHTdata(){ 
+	public String makeDHTdataFromProfile(){ 
 	    dd = new DHTdata();
 	    dd.setGID(profile.getGID());
 	    PublicProfile pp = new PublicProfile();
@@ -124,28 +125,40 @@ public class Social {
 	}
 	
 	//Parse data string retrieved from DHT into dd object
-	public void parseDHTdata(String data){
+	public void parseDHTString(String data){
 		Gson gson = new Gson();
 		dd = gson.fromJson(data, DHTdata.class);
 	}
 	
-	public String getNewMessage(){ return dd.getNextMessage(); }
+	public String createDHTString(){
+		Gson gson = new Gson();
+		return gson.toJson(dd);
+	}
+	
+	
+	public String getNewMessage(){ return dd.getNextMessage(); } //No embedded retrieve or update to prevent repeated queries to DHT
 	
 	public String getNewRequest(){ return dd.getNextRequest(); }
 	
 	public void UpdateDHTPubProfile(){ dd.setPubProfile(profile.getPub());}
 
 	//Store Current Profile into DHT (with empty Message and Request Lists)
-	public void dhtInsert(){ 
-		dht.insert(profile.getGID(), makeDHTdata()) ;
+	public void dhtInsertNew(){ 
+		dht.insert(profile.getGID(), makeDHTdataFromProfile()) ;
 	}
 	
-	public String dhtRetrieve(){ 
-		return dht.retrieve(profile.getGID());
+	public void dhtRetrieve(){ 
+		String dhtdata = dht.retrieve(profile.getGID());
+		parseDHTString(dhtdata);
 	}
 	
+	public void dhtUpdate(){
+		dht.update(dd.getGID(), createDHTString());
+	}
+	
+	//Update DHT data with current profile
 	public void dhtUpdateProfile(){ 
-		dht.update(profile.getGID(), makeDHTdata());
+		dht.update(profile.getGID(), makeDHTdataFromProfile());
 	}
 	
 	public void dhtDisplay(){
@@ -153,25 +166,37 @@ public class Social {
 	}
 	
 	public void SendMessage(String receiverID, String message){
+		Gson gson = new Gson();
 		//get receiver data from DHT
 		String dhtdata = dht.retrieve(receiverID);
 		//parse data and store into dd
-		parseDHTdata(dhtdata);
+		//parseDHTString(dhtdata);
+		DHTdata dr = gson.fromJson(dhtdata, DHTdata.class);
 		//add new message
-		dd.addMessage(profile.getGID(), message);
+		dr.addMessage(profile.getGID(), message);
 		//update receiver data in DHT
-		Gson gson = new Gson();
-		dht.update(receiverID, gson.toJson(dd));
+		dht.update(receiverID, gson.toJson(dr));
 	}
 	
 	public void SendFriendRequest(String receiverID, String request){
-		String dhtdata = dht.retrieve(receiverID);
-		parseDHTdata(dhtdata);
-		dd.addRequest(profile.getGID(), request);
 		Gson gson = new Gson();
-		dht.update(receiverID, gson.toJson(dd));
+		String dhtdata = dht.retrieve(receiverID);
+		DHTdata dr = gson.fromJson(dhtdata, DHTdata.class);
+		dr.addRequest(profile.getGID(), request);
+		dht.update(receiverID, gson.toJson(dr));
 	} 
-	public void RespondToFriendRequest(){}
+	
+	public void SendFriendResponse (String receiverID, String response, boolean accept){
+		Gson gson = new Gson();
+		String dhtdata = dht.retrieve(receiverID);
+		DHTdata dr = gson.fromJson(dhtdata, DHTdata.class);
+		dr.addResponse(profile.getGID(), response, accept);
+		dht.update(receiverID, gson.toJson(dr));
+	} 
+	
+	public void RespondToFriendRequest(){
+		//
+	}
 	public void AcknowledgeFriendRequestResponse(){}
 	
 	
