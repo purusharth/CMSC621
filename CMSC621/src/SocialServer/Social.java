@@ -8,17 +8,18 @@ public class Social {
 	private Profile profile;
 	private String datafile;
 	private DHTdata dd;
-	private DHT dht = new DHT();
+	private DHT dht;
 	
-	public Social(Profile profile, String datafile) {
+	public Social(Profile profile, String datafile, DHT hash) {
 		this.profile = profile;
 		this.datafile = datafile;
+		this.dht = hash;
 	}
-	public void createPofile(){
-		//Create Public/Private Key
+	
+	public void createDefaultPofile(){
 		//populate Profile object
 		profile.setGID("puru");
-		profile.setAge(31);;
+		profile.setAge(31);
 		profile.setName("Purusharth Prakash");
 		profile.setSex("Male");
 		profile.addHobby("swimming");
@@ -28,8 +29,19 @@ public class Social {
 		profile.addFriend("somnath");
 		profile.addFriend("jason");
 		profile.insertMessage("Welcome");
-				
-		//Join CHORD, save ip,pubkey,pubprofile,
+	}
+	
+	public void createDefaultPofile2(){
+		//populate Profile object
+		profile.setGID("bryan");
+		profile.setAge(25);
+		profile.setName("Bryan Porter");
+		profile.setSex("Male");
+		profile.addHobby("cycling");
+		profile.addHobby("diving");
+		profile.setSchool("UMBC");
+		profile.addFriend("josh");
+		profile.addFriend("jason");
 	}
 	
 	public void displayProfile(){
@@ -37,30 +49,35 @@ public class Social {
 		System.out.println(gson.toJson(profile));
 	}
 	
+	//Save profile to file
 	public void saveProfile(){
 		Gson gson = new Gson();
 		PeerUtils.writeStringtoFile(datafile, gson.toJson(profile));
 	}
 	
+	//Load Profile from file
 	public void LoadProfile(){
 		 String jsonTxt = PeerUtils.readFiletoString(datafile);  
 	     profile = new Gson().fromJson(jsonTxt, Profile.class);
 	}
 	
+	//Convert profile object to JSON String
 	public String profileStr(){
 		Gson gson = new Gson();
 		return gson.toJson(profile);
 	}
 	
+	//Get Public Profile as JSON String
 	public String getPubProfile(){
 		return profile.getPubStr();
 	}
 	
+	//Get Private Profile as JSON String
 	public String getPrivProfile(){
 		return profile.getPrivStr();
 	}
 	
-	public void RemoveProfile(){}
+	//public void RemoveProfile(){}
 	
 	public void DisplayFriendList(){
 		ArrayList<String> fl = profile.getFriends(); 
@@ -84,6 +101,8 @@ public class Social {
 	    for(int i = 0; i < n ; i++) System.out.println( "  " + ml.get( i ) );
 	}
 	
+	//Create dd data object, for DHT data structure.
+	//Data object dd values cannot be modified directly, values are loaded from profile
 	//create data string to be stored in DHT
 	public String makeDHTdata(){ 
 	    dd = new DHTdata();
@@ -95,6 +114,8 @@ public class Social {
 	    pp.setAge(profile.getAge());
 	    pp.setHobbies(profile.getHobbies());
 	    dd.setPubProfile(pp);
+	    dd.updateIP();
+	    dd.updateTimeStamp();
 	    //dd.addMessage("josh", "Hello");
 	    //dd.addMessage("jeremy", "Where you at?");
 	    //dd.addRequest("jason", "Lets Become Friends");
@@ -102,7 +123,7 @@ public class Social {
 	    return gson.toJson(dd);
 	}
 	
-	//Parse data string retrieved from DHT
+	//Parse data string retrieved from DHT into dd object
 	public void parseDHTdata(String data){
 		Gson gson = new Gson();
 		dd = gson.fromJson(data, DHTdata.class);
@@ -115,36 +136,51 @@ public class Social {
 	public void UpdateDHTPubProfile(){ dd.setPubProfile(profile.getPub());}
 
 	//Store Current Profile into DHT (with empty Message and Request Lists)
-	public void dhtInsert(){ dht.insert(profile.getGID(), makeDHTdata()) ;}
+	public void dhtInsert(){ 
+		dht.insert(profile.getGID(), makeDHTdata()) ;
+	}
 	
-	public String dhtRetrieve(){ return dht.retrieve(profile.getGID());}
+	public String dhtRetrieve(){ 
+		return dht.retrieve(profile.getGID());
+	}
 	
-	public void dhtUpdateProfile(){ dht.update(profile.getGID(), makeDHTdata());}
+	public void dhtUpdateProfile(){ 
+		dht.update(profile.getGID(), makeDHTdata());
+	}
+	
+	public void dhtDisplay(){
+		dht.print();
+	}
 	
 	public void SendMessage(String receiverID, String message){
-		//get data
+		//get receiver data from DHT
 		String dhtdata = dht.retrieve(receiverID);
-		//parse data into dd
+		//parse data and store into dd
 		parseDHTdata(dhtdata);
 		//add new message
 		dd.addMessage(profile.getGID(), message);
-		//update data
+		//update receiver data in DHT
 		Gson gson = new Gson();
 		dht.update(receiverID, gson.toJson(dd));
 	}
+	
+	public void SendFriendRequest(String receiverID, String request){
+		String dhtdata = dht.retrieve(receiverID);
+		parseDHTdata(dhtdata);
+		dd.addRequest(profile.getGID(), request);
+		Gson gson = new Gson();
+		dht.update(receiverID, gson.toJson(dd));
+	} 
+	public void RespondToFriendRequest(){}
+	public void AcknowledgeFriendRequestResponse(){}
+	
 	
 	//public void dhtUpdatePubKey(){}
 	//public void dhtUpdateUserID(){}
 	//public void dhtGetMessages(){} //Get New Messages from DHT 
 	//public void dhtGetRequests(){}
-	
-	public void SendFriendRequest(String request){} 
-	public void RespondToFriendRequest(){}
-	public void AcknowledgeFriendRequestResponse(){}
-	
 	//public void UpdatePrivProfile(){}
-	
-	
+		
 	public void joinNetwork(){}
 	public void leaveNetwork(){}
 

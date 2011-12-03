@@ -32,11 +32,11 @@ public class Test
 
     try {
 		System.out.println(InetAddress.getLocalHost().getHostAddress());
+		System.out.println(InetAddress.getLocalHost());
 	} catch (UnknownHostException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-    
     /*
     PeerRequestHandler ph = new PeerRequestHandler(myProf);
     String jsonrequest = ph.makeRequest("1234","getData");
@@ -44,13 +44,26 @@ public class Test
     PeerUtils.writeStringtoFile("profile-request.json", jsonrequest);
     */
     Profile prof1 = new Profile();
-    Social social = new Social(prof1, "profile.json");
-    social.createPofile();
+    DHT dht = new DHT();
+    Social social = new Social(prof1, "profile.json", dht);
+    social.createDefaultPofile();
     social.displayProfile();
     //social.saveProfile();
     social.DisplayFriendList();
     social.DisplayMessages();
-    System.out.println(social.makeDHTdata());
+    //System.out.println(social.makeDHTdata()); //Create 
+    social.dhtInsert(); //Insert
+    social.dhtDisplay();
+    social.SendMessage("puru", "Hi there");
+    social.dhtDisplay();
+    
+    Profile prof2 = new Profile();
+    Social social2 = new Social(prof2, "profile2.json", dht);
+    social2.createDefaultPofile2();
+    social2.displayProfile();
+    social2.dhtInsert();
+    social.dhtDisplay();
+    
     
     //-------------------------------------------------------------------------------
 

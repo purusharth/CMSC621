@@ -1,6 +1,7 @@
 package SocialServer;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class DHT {
 	private HashMap<String,String> dht;
@@ -28,6 +29,17 @@ public class DHT {
 	public void update(String key, String value){
 		dht.remove(key);
 		dht.put(key, value);
+	}
+	
+	public void print(){
+		System.out.println("--------------------Hashtable Entries--------------------");
+		for (Map.Entry<String, String> entry : dht.entrySet()) {
+		    String key = entry.getKey();
+		    Object value = entry.getValue();
+		    System.out.println(key + " : " + value);
+		}
+		System.out.println("---------------------------------------------------------");
+		
 	}
 	
 }
