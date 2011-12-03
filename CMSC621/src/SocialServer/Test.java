@@ -45,9 +45,10 @@ public class Test
     PeerUtils.writeStringtoFile("profile-request.json", jsonrequest);
     */
     
+    DHT dht = new DHT();
+    
     //Create New Profile
     Profile prof1 = new Profile();
-    DHT dht = new DHT();
     Social social = new Social(prof1, "profile.json", dht);
     social.createDefaultPofile();
     social.displayProfile();
@@ -63,9 +64,9 @@ public class Test
     social.dhtDisplay();
     
     //Check for new messages
+    social.dhtRetrieve();
     Gson gson = new Gson();
     DHTdata.MessageStruct ms;
-    social.dhtRetrieve();
     String msg = social.getNewMessage();
     while (!(msg.equals(""))){
     	ms = gson.fromJson(msg, DHTdata.MessageStruct.class);
@@ -74,8 +75,6 @@ public class Test
     }
     social.dhtUpdate();
     social.dhtDisplay();
-    
-    
     
     
     Profile prof2 = new Profile();
@@ -91,30 +90,17 @@ public class Test
     social.dhtDisplay();
     
     //Check for new requests
-    String kb;
-    Scanner input=new Scanner(System.in); 
     social2.dhtRetrieve();
-    msg = social2.getNewRequest();
-    System.out.println(msg);
-    while (!(msg.equals(""))){
-    	ms = gson.fromJson(msg, DHTdata.MessageStruct.class);
-    	//System.out.println(ms);
-    	if (ms.type.equals("REQ")){
-    		System.out.println("Incoming Friend Request from "+ms.sender);
-    		System.out.println("Message from "+ms.sender+" : "+ms.msg);
-    		System.out.print("Do you wish to accept [yes|no]: ");
-    		kb = input.next();
-    		if (kb.equals("yes")){
-    			social2.SendFriendResponse(ms.sender, "Sure", true);
-    		}
-    		else{
-    			social2.SendFriendResponse(ms.sender, "Sorry", false);
-    		}
-    	}
-    	msg = social2.getNewRequest();
-    }
+    social2.ProcessRequests();
     social2.dhtUpdate();
     social2.dhtDisplay();
+    
+    //Process request response
+    social.dhtRetrieve();
+    social.ProcessRequests();
+    social.dhtUpdate();
+    social.dhtDisplay();
+    social.DisplayFriendList();
     
     //-------------------------------------------------------------------------------
 

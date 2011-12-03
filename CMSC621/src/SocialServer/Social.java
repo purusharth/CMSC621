@@ -1,6 +1,7 @@
 package SocialServer;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import com.google.gson.Gson;
 
@@ -130,33 +131,38 @@ public class Social {
 		dd = gson.fromJson(data, DHTdata.class);
 	}
 	
+	//Convert data object to JSON String Format for DHT
 	public String createDHTString(){
 		Gson gson = new Gson();
 		return gson.toJson(dd);
 	}
 	
-	
+	//Get Next Message from Data Object
 	public String getNewMessage(){ return dd.getNextMessage(); } //No embedded retrieve or update to prevent repeated queries to DHT
 	
+	//Get Next Request from Data Object
 	public String getNewRequest(){ return dd.getNextRequest(); }
 	
-	public void UpdateDHTPubProfile(){ dd.setPubProfile(profile.getPub());}
 
 	//Store Current Profile into DHT (with empty Message and Request Lists)
+	//Assumes no profile exists in DHT. Otherwise use dhtUpdate
 	public void dhtInsertNew(){ 
 		dht.insert(profile.getGID(), makeDHTdataFromProfile()) ;
 	}
 	
+	//Retrieve DHT entry and and parse into dd data object
 	public void dhtRetrieve(){ 
 		String dhtdata = dht.retrieve(profile.getGID());
 		parseDHTString(dhtdata);
 	}
 	
+	//Update DHT entry using current dd data object
 	public void dhtUpdate(){
 		dht.update(dd.getGID(), createDHTString());
 	}
 	
 	//Update DHT data with current profile
+	//IP and Time Stamp are also updated
 	public void dhtUpdateProfile(){ 
 		dht.update(profile.getGID(), makeDHTdataFromProfile());
 	}
@@ -194,10 +200,60 @@ public class Social {
 		dht.update(receiverID, gson.toJson(dr));
 	} 
 	
-	public void RespondToFriendRequest(){
-		//
+	public void SendResponseACK(String receiverID, String ackresponse){
+		Gson gson = new Gson();
+		String dhtdata = dht.retrieve(receiverID);
+		DHTdata dr = gson.fromJson(dhtdata, DHTdata.class);
+		dr.addAck(profile.getGID(), ackresponse);
+		dht.update(receiverID, gson.toJson(dr));
 	}
-	public void AcknowledgeFriendRequestResponse(){}
+	
+	public void ProcessRequests(){
+		Gson gson = new Gson();
+		DHTdata.MessageStruct ms;
+	    String msg = getNewRequest();
+	    //System.out.println(msg);
+	    String kb;
+	    Scanner input=new Scanner(System.in); 
+	    while (!(msg.equals(""))){
+	    	ms = gson.fromJson(msg, DHTdata.MessageStruct.class);
+	    	//System.out.println(msg);
+	    	if (ms.type.equals("REQ")){
+	    		System.out.println("Incoming Friend Request from "+ms.sender);
+	    		System.out.println("Message from "+ms.sender+" : "+ms.msg);
+	    		System.out.print("Do you wish to accept [yes|no]: ");
+	    		kb = input.next();
+	    		if (kb.equals("yes")){
+	    			SendFriendResponse(ms.sender, "Sure", true);
+	    		}
+	    		else{
+	    			SendFriendResponse(ms.sender, "Sorry", false);
+	    		}
+	    	}
+	    	else if(ms.type.equals("ACCEPT")){
+	    		System.out.println("Friend Request Accepted by "+ms.sender);
+	    		System.out.println("Adding \""+ms.sender+"\" as friend.");
+	    		profile.addFriend(ms.sender);
+	    		SendResponseACK(ms.sender, "Received ACCEPT.");
+	    	}
+	    	else if(ms.type.equals("DENY")){
+	    		System.out.println("Friend Request Denied by "+ms.sender);
+	    	}
+	    	else if(ms.type.equals("ACK")){
+	    		System.out.println("Friend Request Acceptance Acknowledged by "+ms.sender);
+	    		System.out.println("Message : "+ms.msg);
+	    		System.out.println("Adding \""+ms.sender+"\" as friend.");
+	    		profile.addFriend(ms.sender);
+	    	}
+	    	else{
+	    		System.out.println("ERROR: Unknown TYPE for request/response.");
+	    	}
+	    	msg = getNewRequest();
+	    }
+	}
+	
+	
+	
 	
 	
 	//public void dhtUpdatePubKey(){}
