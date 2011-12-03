@@ -1,6 +1,7 @@
 package SocialServer;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 import com.google.gson.Gson;
@@ -173,13 +174,14 @@ public class Social {
 	
 	public void SendMessage(String receiverID, String message){
 		Gson gson = new Gson();
+		Date date = new Date();
 		//get receiver data from DHT
 		String dhtdata = dht.retrieve(receiverID);
 		//parse data and store into dd
 		//parseDHTString(dhtdata);
 		DHTdata dr = gson.fromJson(dhtdata, DHTdata.class);
 		//add new message
-		dr.addMessage(profile.getGID(), message);
+		dr.addMessage(profile.getGID(), message, date.getTime());
 		//update receiver data in DHT
 		dht.update(receiverID, gson.toJson(dr));
 	}
@@ -224,40 +226,40 @@ public class Social {
 	
 	public void ProcessRequests(){
 		Gson gson = new Gson();
-		DHTdata.MessageStruct ms;
+		DHTdata.RequestStruct rs;
 	    String msg = getNewRequest();
 	    //System.out.println(msg);
 	    String kb;
 	    Scanner input=new Scanner(System.in); 
 	    while (!(msg.equals(""))){
-	    	ms = gson.fromJson(msg, DHTdata.MessageStruct.class);
+	    	rs = gson.fromJson(msg, DHTdata.RequestStruct.class);
 	    	//System.out.println(msg);
-	    	if (ms.type.equals("REQ")){
-	    		System.out.println("Incoming Friend Request from "+ms.sender);
-	    		System.out.println("Message from "+ms.sender+" : "+ms.msg);
+	    	if (rs.type.equals("REQ")){
+	    		System.out.println("Incoming Friend Request from "+rs.sender);
+	    		System.out.println("Message from "+rs.sender+" : "+rs.msg);
 	    		System.out.print("Do you wish to accept [yes|no]: ");
 	    		kb = input.next();
 	    		if (kb.equals("yes")){
-	    			SendFriendResponse(ms.sender, "Sure", true);
+	    			SendFriendResponse(rs.sender, "Sure", true);
 	    		}
 	    		else{
-	    			SendFriendResponse(ms.sender, "Sorry", false);
+	    			SendFriendResponse(rs.sender, "Sorry", false);
 	    		}
 	    	}
-	    	else if(ms.type.equals("ACCEPT")){
-	    		System.out.println("Friend Request Accepted by "+ms.sender);
-	    		System.out.println("Adding \""+ms.sender+"\" as friend.");
-	    		profile.addFriend(ms.sender);
-	    		SendResponseACK(ms.sender, "Received ACCEPT.");
+	    	else if(rs.type.equals("ACCEPT")){
+	    		System.out.println("Friend Request Accepted by "+rs.sender);
+	    		System.out.println("Adding \""+rs.sender+"\" as friend.");
+	    		profile.addFriend(rs.sender);
+	    		SendResponseACK(rs.sender, "Received ACCEPT.");
 	    	}
-	    	else if(ms.type.equals("DENY")){
-	    		System.out.println("Friend Request Denied by "+ms.sender);
+	    	else if(rs.type.equals("DENY")){
+	    		System.out.println("Friend Request Denied by "+rs.sender);
 	    	}
-	    	else if(ms.type.equals("ACK")){
-	    		System.out.println("Friend Request Acceptance Acknowledged by "+ms.sender);
-	    		System.out.println("Message : "+ms.msg);
-	    		System.out.println("Adding \""+ms.sender+"\" as friend.");
-	    		profile.addFriend(ms.sender);
+	    	else if(rs.type.equals("ACK")){
+	    		System.out.println("Friend Request Acceptance Acknowledged by "+rs.sender);
+	    		System.out.println("Message : "+rs.msg);
+	    		System.out.println("Adding \""+rs.sender+"\" as friend.");
+	    		profile.addFriend(rs.sender);
 	    	}
 	    	else{
 	    		System.out.println("ERROR: Unknown TYPE for request/response.");
@@ -265,10 +267,6 @@ public class Social {
 	    	msg = getNewRequest();
 	    }
 	}
-	
-	
-	
-	
 	
 	//public void dhtUpdatePubKey(){}
 	//public void dhtUpdateUserID(){}
