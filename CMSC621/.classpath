@@ -7,5 +7,7 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/CMSC621/lib/gson-1.7.1-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/openchord_1.0.5.jar"/>
+	<classpathentry kind="lib" path="lib/log4j.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -27,10 +27,10 @@ public class Social {
 		profile.setSex("Male");
 		profile.addHobby("swimming");
 		profile.addHobby("reading");
-		profile.addHobby("fishing");
+		profile.addHobby("surfing");
 		profile.setSchool("UMBC");
 		profile.addFriend("somnath");
-		profile.addFriend("jason");
+		profile.addFriend("puru");
 		profile.insertMessage("Welcome");
 	}
 	
@@ -44,7 +44,7 @@ public class Social {
 		profile.addHobby("diving");
 		profile.setSchool("UMBC");
 		profile.addFriend("josh");
-		profile.addFriend("jason");
+		profile.addFriend("puru");
 	}
 	
 	public void displayProfile(){
@@ -97,7 +97,7 @@ public class Social {
 		}
 	}
 	
-	public void DisplayMessages(){
+	public void DisplayStoredMessages(){
 		ArrayList<String> ml = profile.getMessages(); 
 		System.out.println("Message List:");
 	    int n = ml.size();
@@ -177,13 +177,15 @@ public class Social {
 		Date date = new Date();
 		//get receiver data from DHT
 		String dhtdata = dht.retrieve(receiverID);
-		//parse data and store into dd
-		//parseDHTString(dhtdata);
-		DHTdata dr = gson.fromJson(dhtdata, DHTdata.class);
-		//add new message
-		dr.addMessage(profile.getGID(), message, date.getTime());
-		//update receiver data in DHT
-		dht.update(receiverID, gson.toJson(dr));
+		if (dhtdata != null){
+			//parse data and store into dd
+			//parseDHTString(dhtdata);
+			DHTdata dr = gson.fromJson(dhtdata, DHTdata.class);
+			//add new message
+			dr.addMessage(profile.getGID(), message, date.getTime());
+			//update receiver data in DHT
+			dht.update(receiverID, gson.toJson(dr));
+		}
 	}
 	
 
@@ -191,9 +193,11 @@ public class Social {
 	public void SendFriendRequest(String receiverID, String request){
 		Gson gson = new Gson();
 		String dhtdata = dht.retrieve(receiverID);
-		DHTdata dr = gson.fromJson(dhtdata, DHTdata.class);
-		dr.addRequest(profile.getGID(), request);
-		dht.update(receiverID, gson.toJson(dr));
+		if (dhtdata != null){
+			DHTdata dr = gson.fromJson(dhtdata, DHTdata.class);
+			dr.addRequest(profile.getGID(), request);
+			dht.update(receiverID, gson.toJson(dr));
+		}
 	} 
 	
 	public void SendFriendResponse (String receiverID, String response, boolean accept){
@@ -268,6 +272,16 @@ public class Social {
 	    }
 	}
 	
+	public String makeRequest(String ggid, String request){
+		String outputStr="";
+		PeerRequest reqJson = new PeerRequest();
+		Gson gson = new Gson();
+		reqJson.setGID(ggid);
+		reqJson.setRequest(request);		
+		outputStr = gson.toJson(reqJson);
+
+		return(outputStr);
+	}
 	//public void dhtUpdatePubKey(){}
 	//public void dhtUpdateUserID(){}
 	//public void dhtGetMessages(){} //Get New Messages from DHT 

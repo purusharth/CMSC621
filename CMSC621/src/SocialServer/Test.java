@@ -34,6 +34,7 @@ public class Test
     try {
 		System.out.println(InetAddress.getLocalHost().getHostAddress());
 		System.out.println(InetAddress.getLocalHost());
+		System.out.println(PeerUtils.getIPstr(InetAddress.getLocalHost()));
 	} catch (UnknownHostException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -55,7 +56,7 @@ public class Test
     social.saveProfile();  //Save Profile to Disk
     social.dhtInsertNew(); //Insert Profile in DHT
     social.DisplayFriendList();
-    social.DisplayMessages();
+    social.DisplayStoredMessages();
     social.dhtDisplay();
     
     //Send Message to user puru.
@@ -94,6 +95,9 @@ public class Test
     social.dhtUpdate();
     social.dhtDisplay();
     social.DisplayFriendList();
+    
+    //Print Profile
+    System.out.println(prof1);
     
     //-------------------------------------------------------------------------------
 

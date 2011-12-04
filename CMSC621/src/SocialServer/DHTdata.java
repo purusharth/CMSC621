@@ -27,7 +27,7 @@ public class DHTdata {
 		
 		public String toString(){
 			//return String.format("{\"sender\":\"%s\",\"type\":\"%s\",\"msg\":\"%s\",\"expiry\":\"%d\"}",sender,type,msg,expiry);
-			return String.format("sender: %s, message: %s, time: %d",sender,msg,time);
+			return String.format("sender: %s, message: %s, sent: %tc",sender,msg,time);
 		}
 	}
 	

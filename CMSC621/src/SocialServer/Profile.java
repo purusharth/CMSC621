@@ -2,6 +2,7 @@ package SocialServer;
 
 import java.util.ArrayList;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class Profile {
 	
@@ -79,10 +80,11 @@ public class Profile {
 		synchronized public void insertMessage(String message){ privateprofile.messages.add(message);}
 		synchronized public void deleteMessage(String message){ privateprofile.messages.remove(message);}
 	  
-		public String toString(Profile prof) {
+		public String toString() {
 	        //return String.format("PUBLIC-PROFILE:%s\nPRIVATE-PROFILE:%s", publicprofile,privateprofile);
-			Gson gson = new Gson();
+			//Gson gson = new Gson();
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			//return (gson.toJson(publicprofile) + gson.toJson(privateprofile)) ;
-			return gson.toJson(prof);
+			return gson.toJson(this);
 	    }
 }

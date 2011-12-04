@@ -2,6 +2,9 @@ package SocialServer;
 
 import java.util.ArrayList;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 public class PublicProfile {
 	public String gid="";
 	public String name="";
@@ -30,5 +33,9 @@ public class PublicProfile {
         return String.format("gid=%s, name=%s, age=%d, sex=%s hobbies=[%s]", gid, name, age, sex, Arrays.toString(hobbies));
     }
     */
+	public String toString() {
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		return gson.toJson(this);
+	}
 
 }
