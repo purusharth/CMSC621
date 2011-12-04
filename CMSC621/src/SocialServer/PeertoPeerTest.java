@@ -7,7 +7,7 @@ import java.net.UnknownHostException;
 
 import com.google.gson.Gson;
 
-public class PeerMain {
+public class PeertoPeerTest {
 
 	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
 		//String nodeIP = "127.0.0.1";  //Server IP

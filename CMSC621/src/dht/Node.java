@@ -35,7 +35,7 @@ public class Node {
 		
 		Properties props = new Properties();
 		try {
-			String configPath = "src/dht/config.properties";
+			String configPath = "config.properties";
 			InputStream is = new FileInputStream(configPath); 
 			props.load(is);
 		} catch (IOException e1) {

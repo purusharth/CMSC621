@@ -7,7 +7,7 @@ import de.uniba.wiai.lspi.chord.service.PropertiesLoader;
 //import de.uniba.wiai.lspi.chord.service.Chord;
 import de.uniba.wiai.lspi.chord.service.impl.ChordImpl;
 
-public class InitDHT {
+public class InitDHTtest {
 
 	/**
 	 * initialize DHT Layer
@@ -28,14 +28,7 @@ public class InitDHT {
 		System.out.println(report.printPredecessor());
 		System.out.println(report.printSuccessorList());
 		System.out.println(report.printReferences());
-		
-		String val = "{"
-			+"'gid':'123456AB',"
-			+"'name':'someone',"
-			+"'age':25,"
-			+"'hobbies':['reading','baseball','football'],"
-			+"'sex':'male'"
-		+"}";
+	
         
 		//Nd.insertData(chord, "someone", val);
 		//System.out.println(Nd.getData(chord, "someone"));

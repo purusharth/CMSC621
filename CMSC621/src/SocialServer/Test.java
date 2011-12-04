@@ -2,14 +2,14 @@ package SocialServer;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Scanner;
+//import java.util.Scanner;
 /*
 import net.sf.json.JSONObject;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONSerializer;
 //import org.apache.commons.io.IOUtils;
 */
-import com.google.gson.Gson;
+//import com.google.gson.Gson;
 
 /*
  * Junk code for testing
@@ -17,7 +17,7 @@ import com.google.gson.Gson;
 public class Test
 {
 
-  public static void main(String args[]){
+  public static void main(String args[]) throws UnknownHostException  {
 
 	  /*
 	  String jsonTxt = PeerUtils.readFiletoString("profile.json");  
@@ -31,14 +31,11 @@ public class Test
        */
       
 
-    try {
 		System.out.println(InetAddress.getLocalHost().getHostAddress());
 		System.out.println(InetAddress.getLocalHost());
 		System.out.println(PeerUtils.getIPstr(InetAddress.getLocalHost()));
-	} catch (UnknownHostException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+	
+		
     /*
     PeerRequestHandler ph = new PeerRequestHandler(myProf);
     String jsonrequest = ph.makeRequest("1234","getData");

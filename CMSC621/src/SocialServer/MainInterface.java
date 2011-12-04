@@ -26,10 +26,10 @@ public class MainInterface {
 	    Social social = new Social(profile, "profile.json", dht); //Create Social object for profile 
 	    //social.createDefaultPofile(); //Create a Default Profile and populate with values
 	    //social.dhtInsertNew(); //Insert New Profile in DHT.
-	    Profile prof2 = new Profile();
-	    Social social2 = new Social(prof2, "profile2.json", dht);
-	    social2.createDefaultPofile2();
-	    social2.dhtInsertNew();
+	    //Profile prof2 = new Profile();
+	    //Social social2 = new Social(prof2, "profile2.json", dht);
+	    //social2.createDefaultPofile2();
+	    //social2.dhtInsertNew();
 		
 
 		new PeerServer(port,profile).start(); 
@@ -46,6 +46,7 @@ public class MainInterface {
 		while(option!='q'){
 			System.out.print(
 					"Option Menu\n"+
+					"  0 : Print DHT Entries on this node\n"+
 					"  1 : Create Default Profile\n"+
 					"  2 : Display Current Profile\n"+
 					"  3 : Get Public Profile\n"+
@@ -55,7 +56,11 @@ public class MainInterface {
 					"  7 : Check New Messages\n"+
 					"  8 : Check Pending Requests\n"+
 					"  9 : Display Stored Messages\n"+
-					"  q : Exit\n"+
+					"  f : Display Friends\n"+
+					"  c : Display DHT Details\n"+
+					"  l : Load Profile From Disk\n"+
+					"  s : Save Profile to Disk\n"+
+					"  q : Exit & Leave Chord Network\n"+
 					" Enter Choice:"
 					//Load Profile, Save Profile, Display Friends, Display Public Profile, Display Private Profile
 					//Server Status, Port Parameters
@@ -69,7 +74,7 @@ public class MainInterface {
 			switch(option){
 			
 			case '0':
-				social.dhtDisplay();
+				dht.print();
 				break;
 			case '1':
 				social.createDefaultPofile();
@@ -185,7 +190,40 @@ public class MainInterface {
 				temp = input.next();
 				break;
 			}
-			default: option='q'; break;	
+			case 'f': 
+			{
+				System.out.println("\n----------Display Friends-------------------");
+				social.DisplayFriendList();
+				System.out.println("\nEnter any key to return to Menu");
+				temp = input.next();
+				break;
+			}
+			case 'c': 
+			{
+				System.out.println("\n----------Display DHT Information------------");
+				dht.print();
+				dht.printsp();
+				System.out.println("\nEnter any key to return to Menu");
+				temp = input.next();
+				break;
+			}
+			case 'l': 
+			{
+				System.out.println("\n----------Load Profile From Disk--------------");
+				social.LoadProfile();
+				System.out.println("\nEnter any key to return to Menu");
+				temp = input.next();
+				break;
+			}
+			case 's': 
+			{
+				System.out.println("\n----------Save Profile to Disk----------------");
+				social.saveProfile();
+				System.out.println("\nEnter any key to return to Menu");
+				temp = input.next();
+				break;
+			}
+			default: option='q'; dht.leave(); break;	
 			}
 		}
 		System.out.println("Program Terminated\n");

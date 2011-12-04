@@ -28,7 +28,7 @@ public class PeerServer extends Thread{
     		//Wait for Client to Connect
     		boolean listening = true;
     		Socket clSocket = null;
-    		InetAddress clientAddr;
+    		//InetAddress clientAddr;
     		long threadID = 1;
     		
     		while (listening){
@@ -42,8 +42,8 @@ public class PeerServer extends Thread{
     			    System.out.println("[SERVER] ERROR: Accept failed on port=" + port);
     			    break; //System.exit(-1);
     			}
-    			clientAddr = serverSocket.getInetAddress();
-    			System.out.println("[SERVER] Accepted Client "+threadID+" Connection. IP="+clientAddr.toString());
+    			//clientAddr = serverSocket.getInetAddress();
+    			System.out.println("[SERVER] Accepted Client "+threadID+" Connection.");
     			try {
 					new PeerServerThread(clSocket,threadID++,profile).start();
 				} catch (SocketException e) {

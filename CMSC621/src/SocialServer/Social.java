@@ -1,5 +1,7 @@
 package SocialServer;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -19,19 +21,60 @@ public class Social {
 		this.dht = hash;
 	}
 	
-	public void createDefaultPofile(){
+	public void createDefaultPofile() throws UnknownHostException{
 		//populate Profile object
-		profile.setGID("puru");
-		profile.setAge(31);
-		profile.setName("Purusharth Prakash");
-		profile.setSex("Male");
-		profile.addHobby("swimming");
-		profile.addHobby("reading");
-		profile.addHobby("surfing");
-		profile.setSchool("UMBC");
-		profile.addFriend("somnath");
-		profile.addFriend("puru");
-		profile.insertMessage("Welcome");
+		String ip=InetAddress.getLocalHost().getHostAddress();
+		if (ip.equals("130.85.24.89")){ //linux2.gl.umbc.edu
+			profile.setGID("bryan");
+			profile.setAge(25);
+			profile.setName("Bryan Porter");
+			profile.setSex("Male");
+			profile.addHobby("cycling");
+			profile.addHobby("diving");
+			profile.setSchool("UMBC");
+			profile.addFriend("josh");
+			profile.addFriend("puru");
+			profile.insertMessage("Hi Bryan");
+		}
+		else if(ip.equals("130.85.24.92")){//linux3.gl.umbc.edu
+			profile.setGID("josh");
+			profile.setAge(25);
+			profile.setName("Josh Merritt");
+			profile.setSex("Male");
+			profile.addHobby("cards");
+			profile.addHobby("football");
+			profile.setSchool("UCSD");
+			profile.addFriend("bryan");
+			profile.addFriend("puru");
+			profile.insertMessage("Josh Private Message");
+		}
+		else if(ip.equals("130.85.24.91")){//linux1.gl.umbc.edu=bootstrap
+			profile.setGID("jason");
+			profile.setAge(25);
+			profile.setName("Jason Smith");
+			profile.setSex("Male");
+			profile.addHobby("music");
+			profile.addHobby("golf");
+			profile.setSchool("UDEL");
+			profile.addFriend("jason");
+			profile.addFriend("bryan");
+			profile.addFriend("josh");
+			profile.addFriend("puru");
+			profile.insertMessage("Where you at");
+		}
+		else{
+			profile.setGID("puru"); //any other host
+			profile.setAge(31);
+			profile.setName("Purusharth Prakash");
+			profile.setSex("Male");
+			profile.addHobby("swimming");
+			profile.addHobby("reading");
+			profile.addHobby("surfing");
+			profile.setSchool("UMBC");
+			profile.addFriend("bryan");
+			profile.addFriend("puru");
+			profile.insertMessage("Welcome");
+		}
 	}
 	
 	public void createDefaultPofile2(){
