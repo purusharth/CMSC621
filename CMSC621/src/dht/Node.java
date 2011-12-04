@@ -172,14 +172,15 @@ public class Node {
 		}
 	}
 	
-	public void updateData(Chord chord, String key, Serializable Obj) {
+	//public void updateData(Chord chord, String key, Serializable Obj) {
+	public void updateData(Chord chord, String key, String value) {
 		StringKey sk = new StringKey(key);
 		try {
 			Set<Serializable> val = chord.retrieve(sk); 
 			for (Serializable s: val) {
 				chord.remove(sk, s);
 			}
-			chord.insert(sk, Obj);
+			chord.insert(sk, value);
 		} catch (ServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -202,7 +203,7 @@ public class Node {
 		return val;
 	}
 	
-	public String getMyIP() throws Exception {
+	private String getMyIP() throws Exception {
 		try {
 			InetAddress i = InetAddress.getLocalHost();
 			return i.getHostAddress();

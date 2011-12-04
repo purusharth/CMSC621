@@ -1,4 +1,0 @@
-{
-"publicprofile":{"gid":"123456AB","name":"john","age":33,"hobbies":["swimming","cycling"],"sex":"male"},
-"privateprofile":{"gid":"123456AB","school":"UMBC","friends":["sam@gmail.com","bryan@gmail.com"],"messages":["Hi there","Good Morning","Bye"]}
-}

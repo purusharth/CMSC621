@@ -11,8 +11,9 @@ public class InitDHT {
 
 	/**
 	 * initialize DHT Layer
+	 * @throws InterruptedException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		PropertiesLoader.loadPropertyFile();
 		Chord chord = new ChordImpl(); 
 		Node Nd = new Node(); //create the DHT node
@@ -35,9 +36,9 @@ public class InitDHT {
 			+"'hobbies':['reading','baseball','football'],"
 			+"'sex':'male'"
 		+"}";
-         
-		//Nd.insertData(CHRD, "someone", val);
-		//System.out.println(Nd.getData(CHRD, "someone"));
+        
+		//Nd.insertData(chord, "someone", val);
+		//System.out.println(Nd.getData(chord, "someone"));
 		System.exit(0);
 	}
 
