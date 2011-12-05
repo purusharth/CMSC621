@@ -23,7 +23,8 @@ public class PeerServer extends Thread{
     		    System.out.println("[SERVER] ERROR: Could not create server socket on port: " + port);
     		    System.exit(-1);
     		}
-    		System.out.println("[SERVER] Created Server Socket. " + serverSocket.toString()); 
+    		//System.out.println("[SERVER] Created Server Socket. " + serverSocket.toString()); 
+    		System.out.println("[SERVER] Created Server Socket. Listening on Port="+port);
     		
     		//Wait for Client to Connect
     		boolean listening = true;

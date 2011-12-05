@@ -39,12 +39,14 @@ public class Node {
 			InputStream is = new FileInputStream(configPath); 
 			props.load(is);
 		} catch (IOException e1) {
-			System.out.println("Problem in reading network config file");
+			System.out.println(" ERROR: Problem in reading network config file");
 			e1.printStackTrace();
+			System.exit(0);
 		} catch (IllegalArgumentException e2) {
 			System.out.println("Illegal arguments in network config file");
 			e2.printStackTrace();
-		}
+		} 
+		
 		
 		//get the static bootstrap IP
 		this.bootstrapIP = props.getProperty("DHT_bootstrap");		
@@ -92,6 +94,7 @@ public class Node {
 						System.out.println("Failed to create the chord, bootstrap = " + bootstrap);
 						System.out.println(e.getMessage());
 					}
+					/*
 					if (!joined) {
 						DatagramSocket socket = new DatagramSocket(5001);						
 						try {
@@ -134,6 +137,7 @@ public class Node {
 							}
 						}
 					} //if (!joined)
+					*/
 				}
 			} catch (MalformedURLException e1) {
 				e1.printStackTrace();

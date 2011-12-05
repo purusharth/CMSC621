@@ -9,5 +9,10 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/openchord_1.0.5.jar"/>
 	<classpathentry kind="lib" path="lib/log4j.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec-1.5.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/CMSC621/lib/commons-codec-1.5-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

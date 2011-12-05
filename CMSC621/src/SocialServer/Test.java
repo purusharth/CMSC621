@@ -2,13 +2,6 @@ package SocialServer;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-//import java.util.Scanner;
-/*
-import net.sf.json.JSONObject;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONSerializer;
-//import org.apache.commons.io.IOUtils;
-*/
 //import com.google.gson.Gson;
 
 /*
