@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
+import org.apache.commons.codec.DecoderException;
+
 import com.google.gson.Gson;
 
 public class Social {
@@ -13,12 +15,22 @@ public class Social {
 	private String datafile;
 	private DHTdata dd; //Data Structure for data stored in DHT
 	private DHT dht; //Reference to hashtable
+	private RSA rsa = null;
 	//private Gson gson = new Gson();
 	
 	public Social(Profile profile, String datafile, DHT hash) {
 		this.profile = profile;
 		this.datafile = datafile;
 		this.dht = hash;
+	}
+	
+	public Social(Profile profile, String datafile, DHT hash, RSA rsa) {
+		this.profile = profile;
+		this.datafile = datafile;
+		this.dht = hash;
+		this.rsa = rsa;
+		dd = new DHTdata();
+		dd.setPubKey(rsa.getn());
 	}
 	
 	public void createDefaultPofile() throws UnknownHostException{
@@ -151,7 +163,7 @@ public class Social {
 	//Data object dd values cannot be modified directly, values are loaded from profile
 	//create data string to be stored in DHT
 	public String makeDHTdataFromProfile(){ 
-	    dd = new DHTdata();
+	    //dd = new DHTdata();
 	    dd.setGID(profile.getGID());
 	    PublicProfile pp = new PublicProfile();
 	    pp.setName(profile.getName());
@@ -219,12 +231,20 @@ public class Social {
 		Gson gson = new Gson();
 		Date date = new Date();
 		//get receiver data from DHT
-		String dhtdata = dht.retrieve(receiverID);
-		if (dhtdata != null){
+		String dhtdata1 = dht.retrieve(receiverID);
+		//System.out.println("dhtdata="+dhtdata1);
+		if (dhtdata1 != null){
 			//parse data and store into dd
-			//parseDHTString(dhtdata);
-			DHTdata dr = gson.fromJson(dhtdata, DHTdata.class);
+			//parseDHTString(dhtdata1);
+			DHTdata dr = gson.fromJson(dhtdata1, DHTdata.class);
 			//add new message
+			if (rsa != null){
+					//String pubkey = dr.getPubKey();
+					//message = rsa.bencrypt(message, pubkey,"65537");
+					message = rsa.bencrypt(message);
+			
+			}
+			System.out.println("Encrypted Message="+message);
 			dr.addMessage(profile.getGID(), message, date.getTime());
 			//update receiver data in DHT
 			dht.update(receiverID, gson.toJson(dr));
@@ -265,6 +285,14 @@ public class Social {
 	    String msg = getNewMessage();
 	    while (!(msg.equals(""))){
 	    	ms = gson.fromJson(msg, DHTdata.MessageStruct.class);
+			if (rsa != null){
+				//String prikey = rsa.getd();
+					try {
+						msg = rsa.bdecrypt(ms.msg);
+					} catch (DecoderException e) {
+						e.printStackTrace();
+					}
+			}
 	    	System.out.println(ms);
 	    	profile.insertMessage(ms.msg);
 	    	msg = getNewMessage();

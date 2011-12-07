@@ -3,9 +3,7 @@ package SocialServer;
 //import java.io.BufferedReader;
 //import java.io.InputStreamReader;
 //import java.net.InetAddress;
-import java.io.IOException;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 
@@ -13,7 +11,7 @@ import com.google.gson.Gson;
 
 public class MainInterface {
 	
-	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
+	public static void main(String[] args) throws Exception {
 		
 		//String nodeIP = InetAddress.getLocalHost().getHostAddress(); //ServerIP
 		int port = 31337; //Server Port
@@ -21,9 +19,12 @@ public class MainInterface {
 		//Create/Join DHT
 		DHT dht = new DHT();
 		
+		//Create New RSA Key-Pair
+		RSA rsa = new RSA();
+		
 		//Create New Profile
 	    Profile profile = new Profile();
-	    Social social = new Social(profile, "profile.json", dht); //Create Social object for profile 
+	    Social social = new Social(profile, "profile.json", dht, rsa); //Create Social object for profile 
 	    //social.createDefaultPofile(); //Create a Default Profile and populate with values
 	    //social.dhtInsertNew(); //Insert New Profile in DHT.
 	    //Profile prof2 = new Profile();

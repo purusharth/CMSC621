@@ -1,7 +1,6 @@
 package SocialServer;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 //import com.google.gson.Gson;
 
 /*
@@ -10,7 +9,7 @@ import java.net.UnknownHostException;
 public class Test
 {
 
-  public static void main(String args[]) throws UnknownHostException  {
+  public static void main(String args[]) throws Exception  {
 
 	  /*
 	  String jsonTxt = PeerUtils.readFiletoString("profile.json");  
@@ -37,10 +36,11 @@ public class Test
     */
     
     DHT dht = new DHT();
+    RSA rsa = new RSA(512);
     
     //Create New Profile
     Profile prof1 = new Profile();
-    Social social = new Social(prof1, "profile.json", dht);
+    Social social = new Social(prof1, "profile.json", dht,rsa);
     social.createDefaultPofile();
     social.displayProfile();
     social.saveProfile();  //Save Profile to Disk
@@ -62,7 +62,7 @@ public class Test
     
     
     Profile prof2 = new Profile();
-    Social social2 = new Social(prof2, "profile2.json", dht);
+    Social social2 = new Social(prof2, "profile2.json", dht,rsa);
     social2.createDefaultPofile2();
     social2.displayProfile();
     social2.saveProfile();

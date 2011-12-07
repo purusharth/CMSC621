@@ -1,6 +1,7 @@
 package SocialServer;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.security.*;
 import java.security.spec.*;
 import javax.crypto.*;
@@ -11,13 +12,19 @@ public class RSA {
 	private KeyPair keypair;
 	private PublicKey pubkey;
 	private PrivateKey privkey;
+	private BigInteger n = new BigInteger("aae484cf460ce30ed5ae443d9634aa431c2a31d558db4724e0104ed63304289784e214b0b90d1a09e4b69cb44c5618c2368ce995531d9d3171469f416f928a95",16);
+	private BigInteger d = new BigInteger("447f96907276a5e88353f7bc6be1ae417a1f9b9bf5a2e7306bb37db633fabdbdde2088b51d60de2cf32eb45145573bce7d897d9db150de262565fe53b38d95c1",16);
+	private BigInteger e = new BigInteger("10001",16);//exponent
 	
-	RSA() throws Exception{
+	
+	RSA(){}
+	
+	RSA(int keybits) throws Exception{
 		
 		//Generate new key pair
         KeyPairGenerator kpg = null;
 		kpg = KeyPairGenerator.getInstance("RSA");
-        kpg.initialize(512);
+        kpg.initialize(keybits);
         
         keypair = kpg.generateKeyPair();
         pubkey = keypair.getPublic();
@@ -27,8 +34,13 @@ public class RSA {
         RSAPublicKeySpec pub = (RSAPublicKeySpec) fact.getKeySpec(pubkey, RSAPublicKeySpec.class);
         RSAPrivateKeySpec priv = (RSAPrivateKeySpec) fact.getKeySpec(privkey, RSAPrivateKeySpec.class);
         
-        //System.out.println(pub.getModulus()+" "+pub.getPublicExponent());
-        //System.out.println(priv.getModulus()+" "+priv.getPrivateExponent());
+        n = pub.getModulus();
+        e = pub.getPublicExponent();
+        d = priv.getPrivateExponent();
+        
+        System.out.printf("PubKey=%x\n",n);
+        System.out.printf("PriKey=%x\n",d);
+        System.out.printf("Exp=%x\n",e);
 	}
 	
 	RSA(String PrivateKeyFile, String PublicKeyFile) throws Exception{
@@ -39,8 +51,9 @@ public class RSA {
         RSAPublicKeySpec pub = (RSAPublicKeySpec) fact.getKeySpec(pubkey, RSAPublicKeySpec.class);
         RSAPrivateKeySpec priv = (RSAPrivateKeySpec) fact.getKeySpec(privkey, RSAPrivateKeySpec.class);
         
-        System.out.println(pub.getModulus().toString(16)+" "+pub.getPublicExponent().toString(16));
-        System.out.println(priv.getPrivateExponent().toString(16));
+        n = pub.getModulus();
+        e = pub.getPublicExponent();
+        d = priv.getPrivateExponent();
 	}
 	
 	/*
@@ -143,22 +156,77 @@ public class RSA {
     
 
 
-    
-    public static void main(String args[]) throws Exception{
-    	//RSA rsa = new RSA();
-    	RSA rsa = new RSA("private_key.der","public_key.der");
-    	String enc = rsa.encrypt("TESTING 123");
-    	System.out.println(enc);
-    	String dec = rsa.decrypt(enc);
-    	System.out.println(dec);
-    	
-        KeyFactory fact = KeyFactory.getInstance("RSA");
-        RSAPublicKeySpec pub = (RSAPublicKeySpec) fact.getKeySpec(rsa.pubkey, RSAPublicKeySpec.class);
-        RSAPrivateKeySpec priv = (RSAPrivateKeySpec) fact.getKeySpec(rsa.privkey, RSAPrivateKeySpec.class);
-        
-        
-
-    	
-    	
+    public String bencrypt(String inputText) {
+        String hexString = new String(Hex.encodeHex(inputText.getBytes()));
+        BigInteger message = new BigInteger(hexString,16);
+        BigInteger encrypted = message.modPow(e, n);
+        String encryptedHexString = encrypted.toString(16);
+        return encryptedHexString;
     }
+
+    public String bdecrypt(String encryptedHexString) throws DecoderException {
+    	BigInteger encrypted = new BigInteger(encryptedHexString,16);
+        BigInteger decrypted = encrypted.modPow(d, n);
+        String decryptedHexString = decrypted.toString(16);
+        byte[] ouputBytes = Hex.decodeHex(decryptedHexString.toCharArray()); 
+        String output = new String(ouputBytes);
+        return output;
+    }
+    
+    public String bdecrypt(String encryptedHexString,String modulus,String exponent) throws DecoderException {
+    	BigInteger encrypted = new BigInteger(encryptedHexString,16);
+    	BigInteger n = new BigInteger(modulus,16);
+    	BigInteger d = new BigInteger(exponent,16);
+        BigInteger decrypted = encrypted.modPow(d, n);
+        String decryptedHexString = decrypted.toString(16);
+        byte[] ouputBytes = Hex.decodeHex(decryptedHexString.toCharArray()); 
+        String output = new String(ouputBytes);
+        return output;
+    }
+    
+    public String getn(){ return n.toString(16); }
+    public String gete(){ return e.toString(16); }
+    public String getd(){ return d.toString(16); }
+    
+    public String bencrypt(String inputText, String modulus,String exponent) throws DecoderException {
+    	BigInteger n = new BigInteger(modulus,16);
+    	BigInteger e = new BigInteger(exponent,16);
+    	String inputHexString = new String(Hex.encodeHex(inputText.getBytes()));
+    	BigInteger m = new BigInteger(inputHexString,16);
+    	
+        BigInteger out = m.modPow(e, n);
+        
+        String outHexString = out.toString(16);
+        return outHexString;
+    }
+
+
+    public static void main(String args[]) throws Exception{
+    	RSA rsa = new RSA();
+    	//RSA rsa = new RSA("private_key.der","public_key.der");
+    	//String enc = rsa.encrypt("TESTING 123");
+    	//System.out.println(enc);
+    	//String dec = rsa.decrypt(enc);
+    	//System.out.println(dec);
+    	
+        System.out.printf("PubKey=%x\n",rsa.n);
+        System.out.printf("PriKey=%x\n",rsa.d);
+        System.out.printf("Exp=%x\n",rsa.e);
+        
+        String encrypted = rsa.bencrypt("Hello");
+        System.out.println(encrypted);
+        System.out.println(rsa.bdecrypt(encrypted));
+        
+        
+        //Encrypt using public key, Decrypt using private key
+        encrypted = rsa.bencrypt("Hello",rsa.getn(),rsa.gete());
+        System.out.println(encrypted);
+        System.out.println(rsa.bdecrypt(encrypted,rsa.getn(),rsa.getd()));        
+        
+        //Encrypt using private key, Decrypt using public key
+        //encrypted = rsa.bencrypt("TEST 123",rsa.getn(),rsa.getd());
+        //System.out.println(encrypted);
+        //System.out.println(rsa.bdecrypt(encrypted,rsa.getn(),rsa.gete()));
+    }
+
 }
